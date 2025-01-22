@@ -1,0 +1,13 @@
+envVars:
+  - key: DATABASE_HOST
+    value: dpg-cu8f310gph6c73cp2u9g-a.oregon-postgres.render.com
+  - key: DATABASE_PORT
+    value: 5432
+  - key: DATABASE_NAME
+    value: chatapp_9ngp
+  - key: DATABASE_USERNAME
+    value: chatapp_9ngp_user
+  - key: DATABASE_PASSWORD
+    value: toWR14DHbt6BgFXUu6ID7vxH7u8Uebvd
+  - key: DATABASE_SSL
+    value: true # Set to true for Render-provided PostgreSQL

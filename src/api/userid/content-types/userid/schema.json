@@ -1,0 +1,28 @@
+{
+  "kind": "collectionType",
+  "collectionName": "userids",
+  "info": {
+    "singularName": "userid",
+    "pluralName": "userids",
+    "displayName": "userid",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "username": {
+      "type": "string"
+    },
+    "satus": {
+      "type": "string"
+    },
+    "room": {
+      "type": "string"
+    },
+    "socketid": {
+      "type": "integer"
+    }
+  }
+}
