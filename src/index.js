@@ -4,52 +4,56 @@ module.exports = {
   async bootstrap({ strapi }) {
     const io = socketIo(strapi.server.httpServer, {
       cors: {
-        origin: "https://strapichatapp.vercel.app/", // Allow React frontend running on port 3000
+        origin: "https://strapichatapp.vercel.app", // Your frontend URL without trailing slash
         methods: ["GET", "POST"],
       },
     });
 
+   
     io.on("connection", (socket) => {
-      // Fetch the username from the query parameters sent during connection
-      const username = socket.handshake.query.username || "Guest";
+    
+      const username = socket.handshake.query.username?.trim() || "Guest";
 
       console.log(`New client connected: ${socket.id}, Username: ${username}`);
 
-      // When the client sends a message, save it to the database
+     
       socket.on("send_message", async (message) => {
-        console.log(`Message received from ${username}:`, message);
-
-        // Ensure timestamp is in ISO format
-        const timestamp = new Date().toISOString(); // Formats to '2025-01-22T08:30:00.000Z'
-
-        // Validate that the message has the required fields
-        if (!message.text) {
+      
+        if (!message.text?.trim()) {
           console.error("Message is missing required field: text");
-          return; // Don't proceed if the message is invalid
+          return;
         }
 
-        // Save the message to the database
+        // Add the username to the message object
+        message.user = username;
+
+        // Create a timestamp in ISO format
+        const timestamp = new Date().toISOString();
+
         try {
+          // Save the message to the Strapi database
           const savedMessage = await strapi.entityService.create("api::chat.chat", {
             data: {
-              user: username, // Use the username from the connection
-              text: message.text, // Ensure this is a string
-              timestamp: timestamp, // Use ISO formatted timestamp
+              user: username, // Store the username of the sender
+              text: message.text, // Store the message text
+              timestamp: timestamp, // Store the timestamp of the message
             },
           });
 
-          // Emit the message back to all clients, including the sender
+          // Emit the message back to all connected clients, including the sender
           io.emit("receive_message", savedMessage);
         } catch (error) {
           console.error("Error saving message:", error);
         }
       });
 
+      // Handle client disconnect event
       socket.on("disconnect", () => {
         console.log(`Client disconnected: ${socket.id}, Username: ${username}`);
       });
     });
 
+  
     strapi.io = io;
   },
 };
