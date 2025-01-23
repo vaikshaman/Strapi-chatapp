@@ -4,7 +4,7 @@ module.exports = {
   async bootstrap({ strapi }) {
     const io = socketIo(strapi.server.httpServer, {
       cors: {
-        origin: "http://localhost:3000", // Allow React frontend running on port 3000
+        origin: "https://strapichatapp.vercel.app/", // Allow React frontend running on port 3000
         methods: ["GET", "POST"],
       },
     });
