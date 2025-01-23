@@ -4,21 +4,21 @@ module.exports = {
   async bootstrap({ strapi }) {
     const io = socketIo(strapi.server.httpServer, {
       cors: {
-        origin: "https://strapichatapp.vercel.app", // Your frontend URL without trailing slash
+        origin: "https://strapichatapp.vercel.app", // Frontend URL
         methods: ["GET", "POST"],
       },
     });
 
-   
+    // Handle connection events
     io.on("connection", (socket) => {
-    
+      // Fetch the username from the query parameters or default to "Guest"
       const username = socket.handshake.query.username?.trim() || "Guest";
 
       console.log(`New client connected: ${socket.id}, Username: ${username}`);
 
-     
+      // When a message is sent by the client
       socket.on("send_message", async (message) => {
-      
+        // Ensure the message has the required text field and it isn't empty
         if (!message.text?.trim()) {
           console.error("Message is missing required field: text");
           return;
@@ -53,7 +53,7 @@ module.exports = {
       });
     });
 
-  
+    // Attach the Socket.IO instance to the Strapi server for global access
     strapi.io = io;
   },
 };
